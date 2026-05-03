@@ -1,0 +1,64 @@
+# Homebrew
+if [ -x /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+# zsh completion
+autoload -Uz compinit
+compinit
+
+# fzf
+if command -v fzf >/dev/null 2>&1; then
+  source <(fzf --zsh)
+fi
+
+# zoxide
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh --cmd cd)"
+fi
+
+# atuin
+if command -v atuin >/dev/null 2>&1; then
+  eval "$(atuin init zsh)"
+fi
+
+# starship
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init zsh)"
+fi
+
+# Bun completions
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+
+# Claude Code
+export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+
+# Aliases
+if command -v eza >/dev/null 2>&1; then
+  alias ls='eza --icons --git'
+  alias ll='eza -l --icons --git --time-style=long-iso'
+  alias la='eza -la --icons --git'
+  alias tree='eza --tree --icons'
+fi
+
+if command -v bat >/dev/null 2>&1; then
+  alias cat='bat --paging=never'
+fi
+
+alias g='git'
+alias lg='lazygit'
+
+# ghq + fzf
+if command -v ghq >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1; then
+  function ghq-fzf() {
+    local selected
+    selected=$(ghq list | fzf --query="$LBUFFER" --prompt="repo > ")
+    if [ -n "$selected" ]; then
+      BUFFER="cd $(ghq root)/${selected}"
+      zle accept-line
+    fi
+    zle reset-prompt
+  }
+  zle -N ghq-fzf
+  bindkey '^]' ghq-fzf
+fi

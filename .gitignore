@@ -1,0 +1,22 @@
+# Secrets
+**/.env
+**/.env.*
+**/*token*
+**/*secret*
+**/credentials*
+**/*.key
+**/*.pem
+**/.ssh/
+**/hosts.yml
+**/.npmrc
+**/.netrc
+**/.pypirc
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# chezmoi local state
+.chezmoistate/

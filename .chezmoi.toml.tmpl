@@ -1,0 +1,8 @@
+{{- $email := promptStringOnce . "email" "Git email address" "stream.actlam@gmail.com" -}}
+{{- $name := promptStringOnce . "name" "Git author name" "Actlam" -}}
+
+sourceDir = {{ .chezmoi.sourceDir | quote }}
+
+[data]
+  email = {{ $email | quote }}
+  name = {{ $name | quote }}
