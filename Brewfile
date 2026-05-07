@@ -18,8 +18,8 @@ brew "git-delta"
 brew "jq"
 brew "yq"
 brew "tmux"
-brew "neovim"
 
 # Apps
 cask "ghostty"
 cask "wezterm"
+cask "zed"

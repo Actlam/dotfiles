@@ -7,6 +7,7 @@
 ## 方針
 
 - まずはターミナル直結の設定だけ管理する
+- zsh は標準形の `~/.zshrc` / `~/.zshenv` を使う
 - シークレット、token、認証情報は絶対に入れない
 - 新しいツールはまず手元で試し、使い続けるものだけ `Brewfile` に追加する
 - 自動化より README の手順を優先する
@@ -21,7 +22,7 @@ v1 で管理しているもの:
 - starship
 - Ghostty
 - WezTerm
-- zsh-abbr
+- Zed のアプリインストール
 - GitHub CLI の通常設定: `~/.config/gh/config.yml`
 - Homebrew パッケージ一覧: `Brewfile`
 
@@ -30,12 +31,34 @@ v1 では管理しないもの:
 - `~/.ssh`
 - `~/.config/gh/hosts.yml`
 - `.env`, `.npmrc`, token, credentials
-- nvim / Zed / fish
+- Zed の設定ファイル
+- nvim / fish
+- zsh-abbr
 - macOS defaults
 - 1Password CLI による secret 注入
 - 自動 bootstrap script
+- `ZDOTDIR` による zsh 設定ディレクトリ変更
 
 ## 初期設定
+
+### zsh の前提
+
+この dotfiles では zsh の設定を標準の場所で管理します。
+
+```text
+~/.zshenv
+~/.zshrc
+```
+
+`ZDOTDIR` で `~/.config/zsh` などへ移動する運用は使いません。既存マシンで `ZDOTDIR` を使っている場合は、`chezmoi apply` 前に現在の設定をバックアップしてから `ZDOTDIR` 設定を外します。
+
+確認:
+
+```sh
+echo "$ZDOTDIR"
+```
+
+何も表示されない状態が標準です。
 
 ### 既存マシンで初めて使う
 
@@ -66,6 +89,43 @@ Homebrew のパッケージをまとめて入れる場合:
 
 ```sh
 brew bundle --file ~/ghq/github.com/Actlam/dotfiles/Brewfile
+```
+
+### 旧 `~/.config/zsh` 運用から移行する
+
+このPCのように `/etc/zshenv` などで `ZDOTDIR=$HOME/.config/zsh` を設定している場合、zsh は `~/.zshrc` ではなく `~/.config/zsh/.zshrc` を読みます。そのままだと dotfiles の標準形とズレます。
+
+まずバックアップします。
+
+```sh
+mkdir -p ~/.dotfiles-backup
+[ -f ~/.zshrc ] && cp ~/.zshrc ~/.dotfiles-backup/zshrc.before-dotfiles
+[ -f ~/.zshenv ] && cp ~/.zshenv ~/.dotfiles-backup/zshenv.before-dotfiles
+[ -d ~/.config/zsh ] && cp -R ~/.config/zsh ~/.dotfiles-backup/config-zsh.before-dotfiles
+```
+
+次に `ZDOTDIR` を設定している箇所を外します。このPCでは `/etc/zshenv` に設定されていました。ファイル全体を空にせず、`ZDOTDIR` を設定している行だけを削除します。
+
+```sh
+sudo cp /etc/zshenv /etc/zshenv.before-dotfiles
+sudoedit /etc/zshenv
+```
+
+その後、chezmoi を適用します。
+
+```sh
+chezmoi init --source ~/ghq/github.com/Actlam/dotfiles
+chezmoi diff
+chezmoi apply
+exec zsh
+```
+
+確認:
+
+```sh
+echo "$ZDOTDIR"
+echo "$HISTFILE"
+git config --global --list
 ```
 
 ### 新しい Mac で復元する
@@ -257,7 +317,7 @@ chezmoi managed    # 管理対象ファイルを見る
 - repo path ごとの Git email 切り替え
 - 1Password CLI を使った secret 注入
 - yazi と関連ツールの追加
-- nvim / Zed の取り込み
+- Zed 設定の取り込み
 - macOS defaults の管理
 - bootstrap script の追加
 
