@@ -4,6 +4,7 @@ tap "homebrew/bundle"
 brew "ghq"
 brew "gh"
 brew "chezmoi"
+brew "volta"
 
 # Shell / CLI
 brew "fzf"
