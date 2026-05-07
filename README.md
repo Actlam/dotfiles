@@ -7,6 +7,7 @@
 ## 方針
 
 - まずはターミナル直結の設定だけ管理する
+- zsh は標準形の `~/.zshrc` / `~/.zshenv` を使う
 - シークレット、token、認証情報は絶対に入れない
 - 新しいツールはまず手元で試し、使い続けるものだけ `Brewfile` に追加する
 - 自動化より README の手順を優先する
@@ -21,8 +22,9 @@ v1 で管理しているもの:
 - starship
 - Ghostty
 - WezTerm
-- zsh-abbr
+- Zed のアプリインストール
 - GitHub CLI の通常設定: `~/.config/gh/config.yml`
+- AI コーディングエージェント共通指示: `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`
 - Homebrew パッケージ一覧: `Brewfile`
 
 v1 では管理しないもの:
@@ -30,12 +32,49 @@ v1 では管理しないもの:
 - `~/.ssh`
 - `~/.config/gh/hosts.yml`
 - `.env`, `.npmrc`, token, credentials
-- nvim / Zed / fish
+- Zed の設定ファイル
+- nvim / fish
+- zsh-abbr
 - macOS defaults
 - 1Password CLI による secret 注入
 - 自動 bootstrap script
+- `ZDOTDIR` による zsh 設定ディレクトリ変更
+
+## 主要設定の要約
+
+「自分が何を入れたっけ」をすぐ思い出すためのチートシート。詳細はファイルを開いて見ます。
+
+| 領域 | 主な内容 | 場所 |
+| --- | --- | --- |
+| 環境変数 | XDG / `~/.local/bin` / Volta / Bun / `LANG=en_US.UTF-8` / `EDITOR=zed --wait` / PATH 重複排除 | `dot_zshenv` |
+| 対話シェル | 履歴 10 万件 + share / 補完(大文字小文字無視, キャッシュ XDG 化) / starship・fzf・zoxide・atuin / eza・bat / git エイリアス (`gst` `gsw` `gbr` `gfe` `gpl` `gad` `gcm` `gmg` `gpsh`) / `Ctrl-]` で ghq+fzf | `dot_zshrc` |
+| Git | name/email は chezmoi の `[data]` から差し込み / 共通 ignore あり | `dot_gitconfig.tmpl`, `dot_gitignore_global` |
+| WezTerm | nord / JetBrains Mono Bold 13pt / opacity 0.93 / Leader=`Ctrl-,` / キーマップは `keybinds.lua` | `dot_config/wezterm/` |
+| GitHub CLI | 通常設定のみ管理(認証情報の `hosts.yml` は対象外) | `dot_config/gh/config.yml` |
+| AI agents | Claude Code / Codex の共通指示。差分レビュー時は `difit` を使う等 | `dot_claude/CLAUDE.md`, `dot_codex/AGENTS.md` |
+| Brewfile | CLI: ghq, gh, chezmoi, volta, fzf, ripgrep, lazygit, starship, zoxide, atuin, bat, eza, git-delta, jq, yq, tmux / アプリ: Ghostty, WezTerm, Zed | `Brewfile` |
+| Volta 経由で入れる CLI | difit(`volta install difit`) | README の「Volta で入れる CLI」 |
 
 ## 初期設定
+
+### zsh の前提
+
+この dotfiles では zsh の設定を標準の場所で管理します。
+
+```text
+~/.zshenv
+~/.zshrc
+```
+
+`ZDOTDIR` で `~/.config/zsh` などへ移動する運用は使いません。既存マシンで `ZDOTDIR` を使っている場合は、`chezmoi apply` 前に現在の設定をバックアップしてから `ZDOTDIR` 設定を外します。
+
+確認:
+
+```sh
+echo "$ZDOTDIR"
+```
+
+何も表示されない状態が標準です。
 
 ### 既存マシンで初めて使う
 
@@ -59,13 +98,63 @@ chezmoi diff
 
 ```sh
 chezmoi apply
-exec zsh
 ```
 
-Homebrew のパッケージをまとめて入れる場合:
+Homebrew のパッケージを入れます(エディタとして使う Zed もここで入ります)。
+
+> ⚠️ 既に手動で WezTerm / Zed / Ghostty を `/Applications/` に入れている場合は、必ず**対話シェルで実行**してください。adopt のため sudo パスワードを聞かれます。詳細と復旧方法は「[Brewfile install のハマりどころ](#brewfile-install-のハマりどころ)」。
 
 ```sh
 brew bundle --file ~/ghq/github.com/Actlam/dotfiles/Brewfile
+```
+
+Volta 経由の CLI を入れます(詳細は「[Volta で入れる CLI](#volta-で入れる-cli)」)。
+
+```sh
+volta install node@lts
+volta install difit
+```
+
+新しい設定でシェルを開き直します。
+
+```sh
+exec zsh
+```
+
+### 旧 `~/.config/zsh` 運用から移行する
+
+`/etc/zshenv` 等で `ZDOTDIR=$HOME/.config/zsh` が設定されていると、zsh は `~/.zshrc` ではなく `~/.config/zsh/.zshrc` を読みます。dotfiles の標準形とズレるので、移行前に解除します。
+
+まずバックアップします。
+
+```sh
+mkdir -p ~/.dotfiles-backup
+[ -f ~/.zshrc ] && cp ~/.zshrc ~/.dotfiles-backup/zshrc.before-dotfiles
+[ -f ~/.zshenv ] && cp ~/.zshenv ~/.dotfiles-backup/zshenv.before-dotfiles
+[ -d ~/.config/zsh ] && cp -R ~/.config/zsh ~/.dotfiles-backup/config-zsh.before-dotfiles
+```
+
+次に `ZDOTDIR` を設定している箇所を外します。`/etc/zshenv` に書かれていることが多いです。ファイル全体を空にせず、`ZDOTDIR` を設定している行だけを削除します。
+
+```sh
+sudo cp /etc/zshenv /etc/zshenv.before-dotfiles
+sudoedit /etc/zshenv
+```
+
+chezmoi の差分を確認して適用します(初回セットアップが済んでいない場合は「既存マシンで初めて使う」を先に実行してから戻ってきてください)。
+
+```sh
+chezmoi diff
+chezmoi apply
+exec zsh
+```
+
+確認:
+
+```sh
+echo "$ZDOTDIR"
+echo "$HISTFILE"
+git config --global --list
 ```
 
 ### 新しい Mac で復元する
@@ -107,8 +196,52 @@ Homebrew のパッケージを入れます。
 
 ```sh
 brew bundle --file ~/ghq/github.com/Actlam/dotfiles/Brewfile
+```
+
+Volta 経由の CLI を入れます。
+
+```sh
+volta install node@lts
+volta install difit
+```
+
+シェルを開き直します。
+
+```sh
 exec zsh
 ```
+
+## Volta で入れる CLI
+
+Brewfile に乗らない npm 系ツールは Volta でピン留めして入れます。「足していく」運用なので、増えたらここに追記します。
+
+| ツール | 用途 | 入れ方 |
+| --- | --- | --- |
+| `difit` | GitHub 風 UI で git diff を見る Web ビューア。AI エージェントが diff レビュー時に使う | `volta install difit` |
+
+Node が未インストールなら先に `volta install node@lts` を入れてください。
+
+## Brewfile install のハマりどころ
+
+cask(WezTerm / Zed / Ghostty)で `brew bundle install` がコケた時の対処メモ。
+
+### 既に `/Applications/<App>.app` が手動で入っている場合
+
+brew は既存 app を "adopt"(管理下に取り込み)しようとして `sudo chmod -R a+rX` を走らせます。**非対話シェルで実行すると sudo が失敗 → brew が purge で `/Applications/<App>.app` を削除します**(実害あり)。
+
+回避策: 対話シェルで `brew bundle --file ~/ghq/github.com/Actlam/dotfiles/Brewfile` を走らせる。sudo パスワードを聞かれたら入力。
+
+### 過去の失敗で残った dangling symlink で再インストールが失敗する場合
+
+代表的な置き場:
+
+```sh
+ls -la /opt/homebrew/bin/zed                         # 削除済み Zed.app を指す
+ls -la /opt/homebrew/bin/wezterm                     # 同上
+ls -la /opt/homebrew/etc/bash_completion.d/wezterm   # 同上
+```
+
+該当があれば `rm` で消してから `brew install --cask <name>` を再実行します。`/usr/local/bin/zed` のように root 所有で残ることもあるので、その場合は `sudo rm`。
 
 ## 日常の更新方法
 
@@ -257,7 +390,7 @@ chezmoi managed    # 管理対象ファイルを見る
 - repo path ごとの Git email 切り替え
 - 1Password CLI を使った secret 注入
 - yazi と関連ツールの追加
-- nvim / Zed の取り込み
+- Zed 設定の取り込み
 - macOS defaults の管理
 - bootstrap script の追加
 

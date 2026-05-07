@@ -1,3 +1,23 @@
+# PATH の重複を毎シェル除去
+typeset -U path PATH
+
+# XDG base directories
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+
+# Local paths
+export PATH="$HOME/.local/bin:$PATH"
+
+# Locale
+export LANG="en_US.UTF-8"
+
+# Editor
+export VISUAL="zed --wait"
+export EDITOR="$VISUAL"
+export GIT_EDITOR="$EDITOR"
+
 # Volta
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"

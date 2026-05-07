@@ -1,29 +1,57 @@
+# Shell behavior
+umask 022
+limit coredumpsize 0
+bindkey -e
+
 # Homebrew
 if [ -x /opt/homebrew/bin/brew ]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
+# History
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=100000
+SAVEHIST=100000
+setopt extended_history
+setopt hist_ignore_all_dups
+setopt hist_ignore_space
+setopt hist_verify
+setopt hist_reduce_blanks
+setopt hist_save_no_dups
+setopt hist_no_store
+setopt hist_expand
+setopt share_history
+
+# Completion behavior
+LISTMAX=50
+unsetopt bg_nice
+setopt list_packed
+setopt no_beep
+unsetopt list_types
+
 # zsh completion
 autoload -Uz compinit
-compinit
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+mkdir -p "$XDG_CACHE_HOME/zsh"
+compinit -d "$XDG_CACHE_HOME/zsh/zcompdump"
 
 # fzf
-if command -v fzf >/dev/null 2>&1; then
+if [[ -t 0 && -t 1 ]] && command -v fzf >/dev/null 2>&1; then
   source <(fzf --zsh)
 fi
 
 # zoxide
-if command -v zoxide >/dev/null 2>&1; then
+if [[ -t 0 && -t 1 ]] && command -v zoxide >/dev/null 2>&1; then
   eval "$(zoxide init zsh --cmd cd)"
 fi
 
 # atuin
-if command -v atuin >/dev/null 2>&1; then
+if [[ -t 0 && -t 1 ]] && command -v atuin >/dev/null 2>&1; then
   eval "$(atuin init zsh)"
 fi
 
 # starship
-if command -v starship >/dev/null 2>&1; then
+if [[ -t 1 ]] && command -v starship >/dev/null 2>&1; then
   eval "$(starship init zsh)"
 fi
 
@@ -47,9 +75,18 @@ fi
 
 alias g='git'
 alias lg='lazygit'
+alias gst='git status'
+alias gsw='git switch'
+alias gbr='git branch'
+alias gfe='git fetch'
+alias gpl='git pull'
+alias gad='git add'
+alias gcm='git commit'
+alias gmg='git merge'
+alias gpsh='git push'
 
 # ghq + fzf
-if command -v ghq >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1; then
+if [[ -t 0 && -t 1 ]] && command -v ghq >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1; then
   function ghq-fzf() {
     local selected
     selected=$(ghq list | fzf --query="$LBUFFER" --prompt="repo > ")
