@@ -1,5 +1,3 @@
-tap "homebrew/bundle"
-
 # Core
 brew "ghq"
 brew "gh"
