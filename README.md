@@ -102,6 +102,8 @@ chezmoi apply
 
 Homebrew のパッケージを入れます(エディタとして使う Zed もここで入ります)。
 
+> ⚠️ 既に手動で WezTerm / Zed / Ghostty を `/Applications/` に入れている場合は、必ず**対話シェルで実行**してください。adopt のため sudo パスワードを聞かれます。詳細と復旧方法は「[Brewfile install のハマりどころ](#brewfile-install-のハマりどころ)」。
+
 ```sh
 brew bundle --file ~/ghq/github.com/Actlam/dotfiles/Brewfile
 ```
@@ -218,6 +220,28 @@ Brewfile に乗らない npm 系ツールは Volta でピン留めして入れ�
 | `difit` | GitHub 風 UI で git diff を見る Web ビューア。AI エージェントが diff レビュー時に使う | `volta install difit` |
 
 Node が未インストールなら先に `volta install node@lts` を入れてください。
+
+## Brewfile install のハマりどころ
+
+cask(WezTerm / Zed / Ghostty)で `brew bundle install` がコケた時の対処メモ。
+
+### 既に `/Applications/<App>.app` が手動で入っている場合
+
+brew は既存 app を "adopt"(管理下に取り込み)しようとして `sudo chmod -R a+rX` を走らせます。**非対話シェルで実行すると sudo が失敗 → brew が purge で `/Applications/<App>.app` を削除します**(実害あり)。
+
+回避策: 対話シェルで `brew bundle --file ~/ghq/github.com/Actlam/dotfiles/Brewfile` を走らせる。sudo パスワードを聞かれたら入力。
+
+### 過去の失敗で残った dangling symlink で再インストールが失敗する場合
+
+代表的な置き場:
+
+```sh
+ls -la /opt/homebrew/bin/zed                         # 削除済み Zed.app を指す
+ls -la /opt/homebrew/bin/wezterm                     # 同上
+ls -la /opt/homebrew/etc/bash_completion.d/wezterm   # 同上
+```
+
+該当があれば `rm` で消してから `brew install --cask <name>` を再実行します。`/usr/local/bin/zed` のように root 所有で残ることもあるので、その場合は `sudo rm`。
 
 ## 日常の更新方法
 
