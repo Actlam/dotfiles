@@ -99,3 +99,18 @@ if [[ -t 0 && -t 1 ]] && command -v ghq >/dev/null 2>&1 && command -v fzf >/dev/
   zle -N ghq-fzf
   bindkey '^]' ghq-fzf
 fi
+
+# git worktree (nested layout: <repo>/.worktrees/<branch>)
+if [[ -t 0 && -t 1 ]] && command -v fzf >/dev/null 2>&1; then
+  function gwt() {
+    if [ $# -eq 0 ]; then
+      local selected
+      selected=$(git worktree list 2>/dev/null | fzf --prompt="worktree > " | awk '{print $1}')
+      [ -n "$selected" ] && cd "$selected"
+    else
+      local repo_root
+      repo_root=$(git rev-parse --show-toplevel) || return 1
+      git worktree add "$repo_root/.worktrees/$1" "$1" && cd "$repo_root/.worktrees/$1"
+    fi
+  }
+fi
