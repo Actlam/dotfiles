@@ -50,6 +50,7 @@ chezmoi cd                  # リポジトリへ移動 (commit / push はここ�
 chezmoi edit-config         # git name/email を変える ([data])
 chezmoi managed             # 管理対象一覧
 brew bundle --file Brewfile # 別マシンで Brewfile を反映
+gwt [<branch>]              # worktree: 引数なしで一覧+切替 / 引数ありで <repo>/.worktrees/<branch> を作って cd
 ```
 
 新しい CLI を `Brewfile` に足す時は `brew install` で試してから手で `brew "<name>"` を書く。`brew bundle dump --force` は使わない(余計なものが混ざる)。Brewfile に乗らない npm 系 CLI は `volta install <name>` で入れる。
