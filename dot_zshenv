@@ -18,10 +18,6 @@ export VISUAL="zed --wait"
 export EDITOR="$VISUAL"
 export GIT_EDITOR="$EDITOR"
 
-# Volta
-export VOLTA_HOME="$HOME/.volta"
-export PATH="$VOLTA_HOME/bin:$PATH"
-
 # Bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"

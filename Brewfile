@@ -2,7 +2,7 @@
 brew "ghq"
 brew "gh"
 brew "chezmoi"
-brew "volta"
+brew "oven-sh/bun/bun"
 
 # Shell / CLI
 brew "fzf"

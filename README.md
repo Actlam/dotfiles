@@ -33,7 +33,7 @@ chezmoi init --source ~/ghq/github.com/Actlam/dotfiles  # git name/email を聞�
 chezmoi diff && chezmoi apply
 
 brew bundle --file ~/ghq/github.com/Actlam/dotfiles/Brewfile  # 必ず対話シェルで(後述)
-volta install node@lts difit cmux
+bun i -g difit cmux
 
 exec zsh
 ```
@@ -53,7 +53,7 @@ brew bundle --file Brewfile # 別マシンで Brewfile を反映
 gwt [<branch>]              # worktree: 引数なしで一覧+切替 / 引数ありで <repo>/.worktrees/<branch> を作って cd
 ```
 
-新しい CLI を `Brewfile` に足す時は `brew install` で試してから手で `brew "<name>"` を書く。`brew bundle dump --force` は使わない(余計なものが混ざる)。Brewfile に乗らない npm 系 CLI は `volta install <name>` で入れる。
+新しい CLI を `Brewfile` に足す時は `brew install` で試してから手で `brew "<name>"` を書く。`brew bundle dump --force` は使わない(余計なものが混ざる)。Brewfile に乗らない npm 系 CLI は `bun i -g <name>` で入れる(更新は `bun update -g <name>`)。
 
 ## シークレットを入れない
 
