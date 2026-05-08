@@ -33,7 +33,7 @@ chezmoi init --source ~/ghq/github.com/Actlam/dotfiles  # git name/email を聞�
 chezmoi diff && chezmoi apply
 
 brew bundle --file ~/ghq/github.com/Actlam/dotfiles/Brewfile  # 必ず対話シェルで(後述)
-volta install node@lts difit
+volta install node@lts difit cmux
 
 exec zsh
 ```
