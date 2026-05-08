@@ -1,22 +1,39 @@
 # dotfiles
 
-ターミナル環境を軽量に復元するための個人 dotfiles。chezmoi で管理している。
+ターミナル環境を軽量に復元するための個人 dotfiles。chezmoi で管理。
 
 ## 方針
 
-ターミナル直結の設定だけ置く。シークレット・token・認証情報は混ぜない。zsh は `~/.zshrc` / `~/.zshenv` の標準形で動かしていて、`ZDOTDIR` は採らない。自動化は最低限、`chezmoi diff` と `git status` で状態が追える範囲に留める。新しいツールはまず手で試して、定着したら `Brewfile` に書き足す。
+- ターミナル直結の設定だけ
+- zsh は標準形 (`~/.zshrc` / `~/.zshenv`)、`ZDOTDIR` は採らない
+- シークレット・token・認証情報は混ぜない
+- 自動化は最小限。`chezmoi diff` と `git status` で状態を追える範囲
+- 新ツールは手で試して、定着したら `Brewfile`
 
 ## 管理対象
 
-入っているのは zsh, git, starship, Ghostty, WezTerm, GitHub CLI の通常設定、Claude Code / Codex の共通指示、Homebrew パッケージ一覧 (`Brewfile`)、それと Zed のアプリインストール。
+対象:
 
-`~/.ssh`、`~/.config/gh/hosts.yml`、`.env` / `.npmrc` / token / credentials、Zed の設定本体、nvim / fish、macOS defaults、bootstrap script、`ZDOTDIR` 運用は対象外。
+- zsh, git, starship
+- Ghostty, WezTerm
+- GitHub CLI 通常設定
+- Claude Code / Codex の共通指示
+- Homebrew パッケージ一覧 (`Brewfile`)
+- Zed のアプリインストール
 
-詳細は各ファイルを直接見る。
+対象外:
+
+- `~/.ssh`, `~/.config/gh/hosts.yml`
+- `.env` / `.npmrc` / `.netrc`、token / private key / credentials
+- Zed の設定本体
+- nvim / fish, macOS defaults, bootstrap script
+- `ZDOTDIR` 運用
+
+詳細は各ファイル参照。
 
 ## セットアップ
 
-リポジトリは `~/ghq/github.com/Actlam/dotfiles` に置く前提。新規 Mac は Xcode CLT と Homebrew から。
+リポジトリは `~/ghq/github.com/Actlam/dotfiles` 前提。新規 Mac は Xcode CLT と Homebrew から。
 
 ```sh
 xcode-select --install
@@ -28,13 +45,13 @@ ghq get https://github.com/Actlam/dotfiles.git
 chezmoi init --source ~/ghq/github.com/Actlam/dotfiles  # git name/email を聞かれる
 chezmoi diff && chezmoi apply
 
-brew bundle --file ~/ghq/github.com/Actlam/dotfiles/Brewfile  # 対話シェルから。理由は後述
+brew bundle --file ~/ghq/github.com/Actlam/dotfiles/Brewfile  # 対話シェルから(理由は後述)
 volta install node@lts difit
 
 exec zsh
 ```
 
-`/etc/zshenv` に `ZDOTDIR=$HOME/.config/zsh` が残っている Mac だと、apply 前に `sudoedit /etc/zshenv` でその行だけ消す。ファイル自体は残す。
+`/etc/zshenv` に `ZDOTDIR=$HOME/.config/zsh` が残っている Mac は、apply 前に `sudoedit /etc/zshenv` で該当行だけ消す。ファイル自体は残す。
 
 ## 日常コマンド
 
@@ -49,13 +66,21 @@ brew bundle --file Brewfile # 別マシンで Brewfile を反映
 gwt [<branch>]              # worktree: 引数なしで一覧+切替 / 引数ありで <repo>/.worktrees/<branch> を作って cd
 ```
 
-`Brewfile` に CLI を足すときは、`brew install` で試してから手で `brew "<name>"` を書く。`brew bundle dump --force` は余計なものが混ざるので使わない。Brewfile に乗らない npm 系 CLI は `volta install <name>` で入れる。
+Brewfile への追加:
+
+- `brew install` で試す → 手で `brew "<name>"` を書く
+- `brew bundle dump --force` は使わない(余計なものが混ざる)
+- Brewfile に乗らない npm 系 CLI は `volta install <name>`
 
 ## シークレット
 
-リポジトリに入れない: `~/.ssh`、`hosts.yml`、`.env`、`.npmrc`、`.netrc`、token、private key、credentials。
+リポジトリに入れない:
 
-コミット前に一応見る。
+- `~/.ssh`, `hosts.yml`
+- `.env`, `.npmrc`, `.netrc`
+- token, private key, credentials
+
+コミット前:
 
 ```sh
 git diff --cached --name-only
@@ -66,9 +91,9 @@ rg -n "token|secret|password|oauth|ghp_|gho_|github_pat|AKIA[0-9A-Z]{16}|BEGIN .
 
 ### `brew bundle` の cask install で `/Applications/<App>.app` が消える
 
-`/Applications/` に手で入れてある WezTerm / Zed / Ghostty を brew が adopt するとき、内部で `sudo chmod -R a+rX` が走る。非対話シェルで叩くと sudo が通らず、brew はそのまま purge で `.app` を消す。実際に消えた。
-
-対処は対話シェルで `brew bundle` を実行して sudo のパスワードを入れるだけ。
+- adopt 時に内部で `sudo chmod -R a+rX` が走る
+- 非対話シェルだと sudo が通らず、brew は purge で `.app` ごと消す(実際に消えた)
+- 対話シェルから `brew bundle` を叩いて sudo パスワードを入れる
 
 ### 過去の失敗で残った dangling symlink で再 install が落ちる
 
@@ -78,4 +103,4 @@ ls -la /opt/homebrew/bin/wezterm
 ls -la /opt/homebrew/etc/bash_completion.d/wezterm
 ```
 
-残っていたら `rm`(root 所有なら `sudo rm`)してから `brew install --cask <name>` をやり直す。
+残っていれば `rm`(root 所有なら `sudo rm`)してから `brew install --cask <name>`。
