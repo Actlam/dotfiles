@@ -49,7 +49,9 @@ v1 では管理しないもの:
 | 環境変数 | XDG / `~/.local/bin` / Volta / Bun / `LANG=en_US.UTF-8` / `EDITOR=zed --wait` / PATH 重複排除 | `dot_zshenv` |
 | 対話シェル | 履歴 10 万件 + share / 補完(大文字小文字無視, キャッシュ XDG 化) / starship・fzf・zoxide・atuin / eza・bat / git エイリアス (`gst` `gsw` `gbr` `gfe` `gpl` `gad` `gcm` `gmg` `gpsh`) / `Ctrl-]` で ghq+fzf | `dot_zshrc` |
 | Git | name/email は chezmoi の `[data]` から差し込み / 共通 ignore あり | `dot_gitconfig.tmpl`, `dot_gitignore_global` |
-| WezTerm | nord / JetBrains Mono Bold 13pt / opacity 0.93 / Leader=`Ctrl-,` / キーマップは `keybinds.lua` | `dot_config/wezterm/` |
+| starship | Nord 系の色 (#88C0D0 / #394260 ほか) を直接埋め込み(WezTerm の nord に寄せた配色) / directory・git・言語バージョン・時刻 segment | `dot_config/starship.toml` |
+| WezTerm | nord / JetBrains Mono Bold 13pt / opacity 0.93 / Leader=`Ctrl-,`(現状は予約のみ。`keybinds.lua` はデフォルト相当のキーバインドを `disable_default_key_bindings = true` の後に再定義したもの) | `dot_config/wezterm/` |
+| Ghostty | Catppuccin Mocha / `JetBrainsMonoNL Nerd Font Mono` 17pt(WezTerm とはフォントもサイズも別) / titlebar 非表示 / padding 10 | `dot_config/ghostty/config` |
 | GitHub CLI | 通常設定のみ管理(認証情報の `hosts.yml` は対象外) | `dot_config/gh/config.yml` |
 | AI agents | Claude Code / Codex の共通指示。差分レビュー時は `difit` を使う等 | `dot_claude/CLAUDE.md`, `dot_codex/AGENTS.md` |
 | Brewfile | CLI: ghq, gh, chezmoi, volta, fzf, ripgrep, lazygit, starship, zoxide, atuin, bat, eza, git-delta, jq, yq, tmux / アプリ: Ghostty, WezTerm, Zed | `Brewfile` |
