@@ -21,13 +21,14 @@
 |---|---|
 | 直前の同じコマンドの続きを書く | 入力始めて `→`(autosuggestions) |
 | もっと前の履歴を絞り込んで探す | `Ctrl+R`(atuin TUI) |
-| ↑↓ で素直に遡る | 矢印キー(atuin が atomic にフィルタ) |
+| ↑ で前のコマンドに遡る | 矢印キー(atuin が入力済み文字でプレフィックス絞り込みした TUI を開く) |
 
 ### 2. ファイル/ディレクトリを探す・移動する
 
 | やりたいこと | 使うもの |
 |---|---|
 | 過去の cd 先に飛ぶ | `cd <部分文字列>`(zoxide。`cd dot` で frecency 1 位) |
+| frecency 上位を TUI で選ぶ | `cdi [<query>]`(zoxide の interactive。`--cmd cd` 指定で `cdi` も自動生成される) |
 | カレント以下のファイル名検索 | `fd <pattern>` または `Ctrl+T` |
 | カレント以下のディレクトリに移動 | `Alt+C` |
 | コード内の文字列検索 | `rg <pattern>` |
@@ -46,7 +47,8 @@ gwq cd feature/agent-a        # そこに cd(現在のシェルで切替、新�
 claude                        # エージェント A をここで起動
 
 # 別タブで:
-gwq cd feature/agent-b        # 別 worktree に
+gwq add -b feature/agent-b    # 別 worktree を作る
+gwq cd feature/agent-b        # そっちに移動
 codex                         # エージェント B
 
 gwq list                      # 全 worktree 一覧
@@ -88,7 +90,9 @@ mise use -g npm:<pkg>@<ver>   # バージョン固定
 
 例: `mise use -g npm:typescript`
 
-CLI を**消す**: `~/.config/mise/config.toml` から該当行を削除して `mise install`(余分な install を片付ける)。
+CLI を**消す**: `~/.config/mise/config.toml` から該当行を削除したうえで `mise uninstall npm:<pkg>` を打つ(`mise install` は不足分の install しかしないので、消えた行のバイナリは自動撤去されない)。
+
+CLI を**更新**: `mise upgrade`(全部)または `mise upgrade npm:<pkg>`(個別)。設定で `latest` 指定にしているなら定期実行が運用の基本。`mise outdated` で更新可能なものを事前確認できる。
 
 非 npm の CLI は backend を変える: `mise use -g cargo:<crate>` / `mise use -g pipx:<py-pkg>` / `mise use -g go:<pkg>` 等。
 
