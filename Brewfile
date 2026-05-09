@@ -17,6 +17,8 @@ brew "git-delta"
 brew "jq"
 brew "yq"
 brew "tmux"
+brew "zsh-autosuggestions"
+brew "zsh-syntax-highlighting"
 
 # Apps
 cask "ghostty"
