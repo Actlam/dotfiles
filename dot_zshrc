@@ -116,6 +116,18 @@ if [[ -t 0 && -t 1 ]] && command -v gwq >/dev/null 2>&1; then
   source <(gwq completion zsh)
 fi
 
+# yazi: `y` opens yazi and cd's to its last directory on exit.
+if command -v yazi >/dev/null 2>&1; then
+  function y() {
+    local tmp cwd
+    tmp="$(mktemp -t yazi-cwd.XXXXXX)"
+    yazi "$@" --cwd-file="$tmp"
+    IFS= read -r -d '' cwd < "$tmp"
+    [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+    rm -f -- "$tmp"
+  }
+fi
+
 # zsh-fast-syntax-highlighting (must be sourced last)
 if [ -f /opt/homebrew/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]; then
   source /opt/homebrew/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh

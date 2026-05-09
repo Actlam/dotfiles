@@ -22,6 +22,7 @@ brew "git-delta"
 brew "jq"
 brew "yq"
 brew "tmux"
+brew "yazi"
 brew "zsh-autosuggestions"
 brew "zsh-fast-syntax-highlighting"
 
