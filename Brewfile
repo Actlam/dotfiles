@@ -1,5 +1,9 @@
+# Taps
+tap "d-kuro/tap"
+
 # Core
 brew "ghq"
+brew "d-kuro/tap/gwq"
 brew "gh"
 brew "chezmoi"
 brew "volta"

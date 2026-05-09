@@ -1,0 +1,8 @@
+# gwq configuration
+# Defaults (basedir, naming template) follow ghq layout out of the box.
+# https://github.com/d-kuro/gwq
+
+[cd]
+# Let `gwq cd` change the current shell's directory instead of spawning a
+# nested shell. Requires the completion script to be sourced (see ~/.zshrc).
+launch_shell = false
