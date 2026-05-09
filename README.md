@@ -33,7 +33,7 @@ chezmoi init --source ~/ghq/github.com/Actlam/dotfiles  # git name/email を聞�
 chezmoi diff && chezmoi apply
 
 brew bundle --file ~/ghq/github.com/Actlam/dotfiles/Brewfile  # 必ず対話シェルで(後述)
-volta install node@lts difit
+mise install                                                  # ~/.config/mise/config.toml の通りに node / bun / 各 npm CLI を入れる
 
 exec zsh
 ```
@@ -54,9 +54,12 @@ gwq list                    # worktree 一覧
 gwq cd [<pattern>]          # worktree 切替 (fzf)。新シェルを起動せず現在のシェルで cd
 gwq add -b <branch>         # 新規 worktree (~/worktrees/<host>/<owner>/<repo>/<branch> に展開)
 y                           # yazi (TUI ファイラー) を開く。終了時に最後にいたディレクトリへ自動 cd
+mise use -g node@lts        # 言語ランタイム (node / bun / python / go ...) のグローバル指定
+mise use -g npm:<package>   # グローバル npm CLI 追加。 ~/.config/mise/config.toml に追記される
+mise install                # 設定ファイル通りに全部入れ直す (別マシン再現)
 ```
 
-新しい CLI を `Brewfile` に足す時は `brew install` で試してから手で `brew "<name>"` を書く。`brew bundle dump --force` は使わない(余計なものが混ざる)。Brewfile に乗らない npm 系 CLI は `volta install <name>` で入れる。
+新しい CLI を `Brewfile` に足す時は `brew install` で試してから手で `brew "<name>"` を書く。`brew bundle dump --force` は使わない(余計なものが混ざる)。Brewfile に乗らない npm 系 CLI は `mise use -g npm:<name>` で入れる(`~/.config/mise/config.toml` に追記される)。
 
 ## シークレットを入れない
 
