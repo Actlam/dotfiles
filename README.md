@@ -2,6 +2,8 @@
 
 ターミナル環境を軽量に復元するための個人 dotfiles。管理は [chezmoi](https://www.chezmoi.io/)。
 
+運用中の使い方(ユースケース別早見表)は [USAGE.md](./USAGE.md)。
+
 ## 方針
 
 - ターミナル直結の設定だけ管理する
