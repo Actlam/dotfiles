@@ -58,6 +58,11 @@ fi
 # Bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
+# zsh-autosuggestions
+if [ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+  source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+
 # Claude Code
 export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 
@@ -113,4 +118,9 @@ if [[ -t 0 && -t 1 ]] && command -v fzf >/dev/null 2>&1; then
       git worktree add "$repo_root/.worktrees/$1" "$1" && cd "$repo_root/.worktrees/$1"
     fi
   }
+fi
+
+# zsh-syntax-highlighting (must be sourced last)
+if [ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+  source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
