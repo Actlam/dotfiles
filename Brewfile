@@ -6,6 +6,7 @@ brew "volta"
 
 # Shell / CLI
 brew "fzf"
+brew "fd"
 brew "ripgrep"
 brew "lazygit"
 brew "starship"
@@ -18,7 +19,7 @@ brew "jq"
 brew "yq"
 brew "tmux"
 brew "zsh-autosuggestions"
-brew "zsh-syntax-highlighting"
+brew "zsh-fast-syntax-highlighting"
 
 # Apps
 cask "ghostty"

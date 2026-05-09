@@ -35,7 +35,12 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 mkdir -p "$XDG_CACHE_HOME/zsh"
 compinit -d "$XDG_CACHE_HOME/zsh/zcompdump"
 
-# fzf
+# fzf (use fd as the underlying file/dir lister)
+if command -v fd >/dev/null 2>&1; then
+  export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
+fi
 if [[ -t 0 && -t 1 ]] && command -v fzf >/dev/null 2>&1; then
   source <(fzf --zsh)
 fi
@@ -120,7 +125,7 @@ if [[ -t 0 && -t 1 ]] && command -v fzf >/dev/null 2>&1; then
   }
 fi
 
-# zsh-syntax-highlighting (must be sourced last)
-if [ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
-  source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# zsh-fast-syntax-highlighting (must be sourced last)
+if [ -f /opt/homebrew/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]; then
+  source /opt/homebrew/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 fi
