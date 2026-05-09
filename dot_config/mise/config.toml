@@ -1,0 +1,17 @@
+# mise global configuration
+# https://mise.jdx.dev/configuration.html
+#
+# `mise install` (or any command in a directory) will install everything below.
+# Per-project tools go in `mise.toml` / `.tool-versions` inside the repo.
+
+[tools]
+node = "lts"
+bun = "latest"
+
+# Global npm CLIs (replacement for previous `volta install`).
+# Add more with: mise use -g npm:<package>
+"npm:@antfu/ni" = "latest"
+"npm:@google/gemini-cli" = "latest"
+"npm:@openai/codex" = "latest"
+"npm:difit" = "latest"
+"npm:pnpm" = "latest"

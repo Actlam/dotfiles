@@ -35,6 +35,13 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 mkdir -p "$XDG_CACHE_HOME/zsh"
 compinit -d "$XDG_CACHE_HOME/zsh/zcompdump"
 
+# mise (multi-language version manager). Manages node, bun, and global npm
+# CLIs (~/.config/mise/config.toml). Activate after compinit so completions
+# register correctly.
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+fi
+
 # fzf (use fd as the underlying file/dir lister)
 if command -v fd >/dev/null 2>&1; then
   export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
@@ -59,9 +66,6 @@ fi
 if [[ -t 1 ]] && command -v starship >/dev/null 2>&1; then
   eval "$(starship init zsh)"
 fi
-
-# Bun completions
-[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 # zsh-autosuggestions
 if [ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
