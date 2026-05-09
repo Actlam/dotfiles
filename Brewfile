@@ -30,3 +30,6 @@ brew "zsh-fast-syntax-highlighting"
 cask "ghostty"
 cask "wezterm"
 cask "zed"
+
+# Fonts (referenced by Ghostty config: dot_config/ghostty/config)
+cask "font-jetbrains-mono-nerd-font"

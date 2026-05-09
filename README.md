@@ -42,6 +42,19 @@ exec zsh
 
 `/etc/zshenv` に `ZDOTDIR=$HOME/.config/zsh` が残っている Mac では、apply の前に `sudoedit /etc/zshenv` で該当行だけ削除する(`/etc/zshenv` 自体は残す)。
 
+### 初回認証 (exec zsh 後の手動手順)
+
+dotfiles に含めない方針(シークレット混入を避ける)のため、新マシン毎に手で実行する。
+
+| 認証 | コマンド | 補足 |
+|---|---|---|
+| GitHub CLI | `gh auth login` | 既定は https プロトコル (`dot_config/gh/config.yml`)。SSH 鍵は不要 |
+| Claude Code | `claude` を起動 | 初回起動でブラウザ認証 |
+| Codex | `codex` を起動 | 同上 |
+| Gemini CLI | `gemini` を起動 | 同上 |
+| Atuin sync (任意) | `atuin login` | 履歴を別マシンと同期する場合のみ |
+| SSH 鍵 (任意) | — | 通常運用は不要。ssh 強制リモートを使うときのみ別途設定 |
+
 ## 日常コマンド
 
 ```sh
