@@ -10,6 +10,9 @@ export XDG_STATE_HOME="$HOME/.local/state"
 # Local paths
 export PATH="$HOME/.local/bin:$PATH"
 
+# Cargo (rustup). Skip on machines without rustup.
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+
 # Locale
 export LANG="en_US.UTF-8"
 
