@@ -31,7 +31,7 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 
 brew install ghq chezmoi
 ghq get https://github.com/Actlam/dotfiles.git
-chezmoi init --source ~/ghq/github.com/Actlam/dotfiles  # git name/email を聞かれる
+chezmoi init --source ~/ghq/github.com/Actlam/dotfiles  # git name/email と ghq root を聞かれる(既定 ~/ghq)
 chezmoi diff && chezmoi apply
 
 brew bundle --file ~/ghq/github.com/Actlam/dotfiles/Brewfile  # 必ず対話シェルで(後述)
