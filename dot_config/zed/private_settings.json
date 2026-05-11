@@ -21,6 +21,7 @@
   // Markdown preview: editor とは独立にフォント/テーマを指定できる
   // (v1.1.2 / 2026-04-29 以降。PR #54003)
   // あずきフォントは ~/Library/Fonts/azuki.ttf を別途配置すること
+  // 配布元: https://azukifont.com/font/azuki.html
   "markdown_preview_font_family": "あずきフォント",
   "markdown_preview_theme": "One Dark",
   "buffer_font_family": ".ZedMono",
