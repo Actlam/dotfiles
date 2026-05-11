@@ -1,0 +1,20 @@
+// Zed keymap
+//
+// Markdown プレビュー関連の追加バインド。
+// 公式には「.md を開いた瞬間プレビュー」設定が無いので
+// (Issue #10966 / PR #48733 が pending)、キー 1 つで横並びプレビューを
+// 出せるようにする運用で代替する。
+[
+  {
+    "context": "Editor && extension == md",
+    "bindings": {
+      // 横並びプレビュー (一度ペイン幅を狭めれば次回も同じ幅で開く)
+      // cmd-shift-v は既に他バインドと衝突するため alt-shift-v を採用
+      "alt-shift-v": "markdown::OpenPreviewToTheSide",
+      // 現在のペインを置き換える形でプレビュー (切り替え運用)
+      "cmd-k v": "markdown::OpenPreview",
+      // エディタに追従するプレビュー
+      "cmd-k cmd-v": "markdown::OpenFollowingPreview"
+    }
+  }
+]
