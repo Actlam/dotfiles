@@ -10,6 +10,11 @@ export XDG_STATE_HOME="$HOME/.local/state"
 # Local paths
 export PATH="$HOME/.local/bin:$PATH"
 
+# mise shims: .zshrc's `mise activate` only runs in interactive shells, so
+# non-interactive subshells (e.g. Claude Code's Bash tool) would otherwise
+# fall back to /opt/homebrew/bin/node and miss the version pinned in mise.
+[ -d "$HOME/.local/share/mise/shims" ] && export PATH="$HOME/.local/share/mise/shims:$PATH"
+
 # Cargo (rustup). Skip on machines without rustup.
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
