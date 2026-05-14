@@ -15,3 +15,10 @@ bun = "latest"
 "npm:@openai/codex" = "latest"
 "npm:difit" = "latest"
 "npm:pnpm" = "latest"
+
+# Hooks
+# mise install / upgrade で node を入れ替えると node bin の corepack shim
+# (yarn, pnpm) が消えるため、postinstall で必ず再生成する。
+# corepack enable は idempotent なので毎回走らせて安全。
+[hooks]
+postinstall = "corepack enable"
