@@ -29,6 +29,9 @@ brew "yazi"
 brew "zsh-autosuggestions"
 brew "zsh-fast-syntax-highlighting"
 
+# Agent tooling
+brew "agent-browser" # AI エージェント向けブラウザ自動化 CLI (vercel-labs/agent-browser)
+
 # Apps
 cask "ghostty"
 cask "wezterm"
