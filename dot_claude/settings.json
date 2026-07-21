@@ -1,0 +1,9 @@
+{
+  "tui": "fullscreen",
+  "theme": "auto",
+  "model": "claude-fable-5[1m]",
+  "statusLine": {
+    "type": "command",
+    "command": "python3 ~/.claude/status-line.py"
+  }
+}
