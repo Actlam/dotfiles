@@ -1,0 +1,130 @@
+#!/usr/bin/env python3
+"""Set a semantic Herdr tab/workspace title without replacing manual names."""
+
+import json
+import os
+import random
+import socket
+import sys
+import time
+
+
+def request(socket_path, method, params=None):
+    payload = {
+        "id": f"semantic-title:{int(time.time() * 1000)}:{random.randrange(1_000_000):06d}",
+        "method": method,
+        "params": params or {},
+    }
+    with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as client:
+        client.settimeout(1.0)
+        client.connect(socket_path)
+        client.sendall((json.dumps(payload, ensure_ascii=False) + "\n").encode())
+        chunks = []
+        while True:
+            chunk = client.recv(64 * 1024)
+            if not chunk:
+                break
+            chunks.append(chunk)
+            if b"\n" in chunk:
+                break
+    data = b"".join(chunks).split(b"\n", 1)[0]
+    return json.loads(data.decode(errors="replace")) if data else {}
+
+
+def is_emoji_first(value):
+    value = value.lstrip()
+    if not value:
+        return False
+    codepoint = ord(value[0])
+    return 0x1F000 <= codepoint <= 0x1FAFF or 0x2600 <= codepoint <= 0x27BF
+
+
+def is_initial_label(label, cwd_name, agent):
+    normalized = label.strip().lower()
+    return (
+        not normalized
+        or normalized == "~"
+        or normalized.isdigit()
+        or normalized in {"codex", "claude", agent, cwd_name.lower()}
+    )
+
+
+def main():
+    force = len(sys.argv) > 1 and sys.argv[1] == "--force"
+    args = sys.argv[2:] if force else sys.argv[1:]
+    title = " ".join(args).strip()
+    if not title:
+        return 0
+    if not is_emoji_first(title):
+        title = "✨ " + title
+    if len(title) > 28:
+        title = title[:27].rstrip() + "…"
+
+    pane_id = os.environ.get("HERDR_PANE_ID", "")
+    socket_path = os.environ.get("HERDR_SOCKET_PATH", "")
+    if not pane_id or not socket_path:
+        return 0
+
+    snapshot_response = request(socket_path, "session.snapshot")
+    snapshot = snapshot_response.get("result", {}).get("snapshot", {})
+    pane = next(
+        (item for item in snapshot.get("panes", []) if item.get("pane_id") == pane_id),
+        None,
+    )
+    if pane is None:
+        pane = next(
+            (item for item in snapshot.get("agents", []) if item.get("pane_id") == pane_id),
+            None,
+        )
+    if pane is None:
+        return 0
+
+    tab_id = pane.get("tab_id")
+    workspace_id = pane.get("workspace_id")
+    agent = str(pane.get("agent") or pane.get("display_agent") or "").lower()
+    cwd = str(pane.get("foreground_cwd") or pane.get("cwd") or "")
+    cwd_name = os.path.basename(cwd).strip()
+
+    tab_label = next(
+        (str(item.get("label") or "") for item in snapshot.get("tabs", []) if item.get("tab_id") == tab_id),
+        "",
+    )
+    workspace_label = next(
+        (
+            str(item.get("label") or "")
+            for item in snapshot.get("workspaces", [])
+            if item.get("workspace_id") == workspace_id
+        ),
+        "",
+    )
+
+    updated = False
+    if tab_id and (force or is_initial_label(tab_label, cwd_name, agent)):
+        request(socket_path, "tab.rename", {"tab_id": tab_id, "label": title})
+        updated = True
+    if workspace_id and (force or is_initial_label(workspace_label, cwd_name, agent)):
+        request(socket_path, "workspace.rename", {"workspace_id": workspace_id, "label": title})
+        updated = True
+
+    if not updated:
+        return 0
+
+    request(
+        socket_path,
+        "pane.report_metadata",
+        {
+            "pane_id": pane_id,
+            "source": "semantic-session-title",
+            "agent": agent or "agent",
+            "title": title,
+            "seq": time.time_ns(),
+        },
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        raise SystemExit(main())
+    except (OSError, ValueError, json.JSONDecodeError):
+        raise SystemExit(0)
