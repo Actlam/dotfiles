@@ -108,6 +108,18 @@ chezmoi add <path>            # 手動で編集した家のファイルを取り
 
 dotfiles を変更したら `exec zsh` で現セッションに反映する(reload しない限り旧 .zshrc のまま)。
 
+#### Codexの共通指示をPC間で共有する
+
+`~/.codex/AGENTS.md` はchezmoi管理され、全PCのCodexへ共通ルールとして配布される。あるPCで内容を更新した場合は、ホーム側の変更を共有元へ取り込み、通常のGitレビューを経て反映する。
+
+```sh
+chezmoi diff ~/.codex/AGENTS.md
+chezmoi add ~/.codex/AGENTS.md
+chezmoi cd                    # commit / push / PR
+```
+
+別PCでは、マージ後に `chezmoi update` してCodexを新しく起動する。CodexはAGENTS.mdをセッション開始時に読み込むため、起動済みセッションには途中反映されない。
+
 ### 8. ターミナル出力で困ったとき
 
 | やりたいこと | コマンド |
