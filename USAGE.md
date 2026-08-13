@@ -108,17 +108,20 @@ chezmoi add <path>            # 手動で編集した家のファイルを取り
 
 dotfiles を変更したら `exec zsh` で現セッションに反映する(reload しない限り旧 .zshrc のまま)。
 
-#### Codexの共通指示をPC間で共有する
+#### エージェントの共通指示をPC間で共有する
 
-`~/.codex/AGENTS.md` はchezmoi管理され、全PCのCodexへ共通ルールとして配布される。あるPCで内容を更新した場合は、ホーム側の変更を共有元へ取り込み、通常のGitレビューを経て反映する。
+`~/.agents/AGENTS.md` を共通指示の唯一の正本としてchezmoi管理する。Codexは `~/.codex/AGENTS.md` のsymlink、Claude Codeは `~/.claude/CLAUDE.md`、Gemini CLIは `~/.gemini/GEMINI.md` のimportから同じ内容を読み込む。
+
+あるPCで内容を更新した場合は正本を編集し、通常のGitレビューを経て全PCへ反映する。ツール別の入口ファイルに共通指示を重複して書かない。
 
 ```sh
-chezmoi diff ~/.codex/AGENTS.md
-chezmoi add ~/.codex/AGENTS.md
+${EDITOR:-vi} ~/.agents/AGENTS.md
+chezmoi diff ~/.agents/AGENTS.md
+chezmoi add ~/.agents/AGENTS.md
 chezmoi cd                    # commit / push / PR
 ```
 
-別PCでは、マージ後に `chezmoi update` してCodexを新しく起動する。CodexはAGENTS.mdをセッション開始時に読み込むため、起動済みセッションには途中反映されない。
+別PCでは、マージ後に `chezmoi update` して各エージェントを新しく起動する。起動済みセッションへ確実に反映したい場合は再起動する。
 
 ### 8. ターミナル出力で困ったとき
 
