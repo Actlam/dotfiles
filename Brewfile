@@ -7,6 +7,7 @@ brew "d-kuro/tap/gwq"
 brew "gh"
 brew "chezmoi"
 brew "mise"
+brew "herdr"
 
 # Shell / CLI
 brew "fzf"

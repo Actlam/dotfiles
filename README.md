@@ -14,7 +14,7 @@
 
 ## 管理対象
 
-入れているもの: zsh, git, starship, Ghostty, WezTerm, GitHub CLI 通常設定, Claude Code / Codex の共通指示, Homebrew パッケージ一覧 (`Brewfile`), Zed のアプリインストール。
+入れているもの: zsh, git, starship, Ghostty, WezTerm, GitHub CLI 通常設定, Claude Code / Codex の共通指示, Herdrの意味ベースセッションタイトル, Homebrew パッケージ一覧 (`Brewfile`), Zed のアプリインストール。
 
 入れないもの: `~/.ssh`, `~/.config/gh/hosts.yml`, `.env` / `.npmrc` / token / credentials, Zed の設定本体, nvim / fish, macOS defaults, bootstrap script, `ZDOTDIR` 運用。
 
@@ -36,6 +36,8 @@ chezmoi diff && chezmoi apply
 
 brew bundle --file ~/ghq/github.com/Actlam/dotfiles/Brewfile  # 必ず対話シェルで(後述)
 mise install                                                  # ~/.config/mise/config.toml の通りに node / bun / 各 npm CLI を入れる
+herdr integration install codex
+herdr integration install claude
 
 exec zsh
 ```
