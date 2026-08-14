@@ -8,6 +8,7 @@ brew "gh"
 brew "chezmoi"
 brew "mise"
 brew "herdr"
+brew "awscli"
 
 # Shell / CLI
 brew "fzf"
@@ -32,6 +33,7 @@ brew "zsh-fast-syntax-highlighting"
 cask "ghostty"
 cask "wezterm"
 cask "zed"
+cask "1password-cli"
 
 # Fonts (referenced by Ghostty config: dot_config/ghostty/config)
 cask "font-jetbrains-mono-nerd-font"
