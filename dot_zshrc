@@ -99,6 +99,11 @@ alias gcm='git commit'
 alias gmg='git merge'
 alias gpsh='git push'
 
+# Codex MCP profiles. The profile files are synced by chezmoi; OAuth
+# credentials stay in each Mac's local keychain and must be authorized once.
+alias codex-work='codex --profile work'
+alias codex-personal='codex --profile personal'
+
 # ghq + fzf
 if [[ -t 0 && -t 1 ]] && command -v ghq >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1; then
   function ghq-fzf() {

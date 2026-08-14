@@ -1,0 +1,6 @@
+developer_instructions = """
+This is the personal Codex profile. When the user asks to add, remove, or configure an MCP server, manage it in the chezmoi source for ~/.codex/personal.config.toml and apply that target with chezmoi. Do not use `codex mcp add` because it writes to the global base config. Never store tokens or OAuth credentials in dotfiles. Use distinct server IDs when the same service also has a work account. After adding an OAuth server, start or provide `codex --profile personal mcp login <server-id>` as appropriate.
+"""
+
+[mcp_servers.notion-personal]
+url = "https://mcp.notion.com/mcp"

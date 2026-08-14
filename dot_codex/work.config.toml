@@ -1,0 +1,12 @@
+developer_instructions = """
+This is the work Codex profile. When the user asks to add, remove, or configure an MCP server, manage it in the chezmoi source for ~/.codex/work.config.toml and apply that target with chezmoi. Do not use `codex mcp add` because it writes to the global base config. Never store tokens or OAuth credentials in dotfiles. Use distinct server IDs when the same service also has a personal account. After adding an OAuth server, start or provide `codex --profile work mcp login <server-id>` as appropriate.
+"""
+
+[mcp_servers.notion-work]
+url = "https://mcp.notion.com/mcp"
+
+[mcp_servers.linear]
+url = "https://mcp.linear.app/mcp"
+
+[mcp_servers.linear.tools.save_issue]
+approval_mode = "approve"

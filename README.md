@@ -53,9 +53,13 @@ dotfiles に含めない方針(シークレット混入を避ける)のため、
 | GitHub CLI | `gh auth login` | 既定は https プロトコル (`dot_config/gh/config.yml`)。SSH 鍵は不要 |
 | Claude Code | `claude` を起動 | 初回起動でブラウザ認証 |
 | Codex | `codex` を起動 | 同上 |
+| Codex MCP (work) | `codex --profile work mcp login notion-work` | Notion。Linear は必要なら `codex --profile work mcp login linear` |
+| Codex MCP (personal) | `codex --profile personal mcp login notion-personal` | Notion。新マシンごとに一度だけ必要 |
 | Gemini CLI | `gemini` を起動 | 同上 |
 | Atuin sync (任意) | `atuin login` | 履歴を別マシンと同期する場合のみ |
 | SSH 鍵 (任意) | — | 通常運用は不要。ssh 強制リモートを使うときのみ別途設定 |
+
+Codex の MCP は `~/.codex/work.config.toml` と `~/.codex/personal.config.toml` に分離される。設定は chezmoi で別マシンへ同期されるが、OAuth 認証情報は同期せず各マシンの安全なローカルストアに置く。通常の `codex` は MCP なし、仕事用は `codex-work`、個人用は `codex-personal` で起動する。
 
 ## 日常コマンド
 
