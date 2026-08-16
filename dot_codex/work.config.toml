@@ -10,3 +10,9 @@ url = "https://mcp.linear.app/mcp"
 
 [mcp_servers.linear.tools.save_issue]
 approval_mode = "approve"
+
+[mcp_servers.figma-work]
+url = "https://mcp.figma.com/mcp"
+
+[projects."/Users/honya/src/github.com/Actlam/agent-honya"]
+trust_level = "trusted"
