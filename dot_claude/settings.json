@@ -6,6 +6,20 @@
     "type": "command",
     "command": "python3 ~/.claude/status-line.py"
   },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/herdr-agent-state.sh\" session",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
   "extraKnownMarketplaces": {
     "claude-community": {
       "source": {

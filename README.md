@@ -42,6 +42,7 @@ herdr integration install claude
 exec zsh
 ```
 
+`chezmoi apply` は適用後に両integrationの状態を確認し、未導入またはHerdr本体より古いhookだけを自動更新する。
 `/etc/zshenv` に `ZDOTDIR=$HOME/.config/zsh` が残っている Mac では、apply の前に `sudoedit /etc/zshenv` で該当行だけ削除する(`/etc/zshenv` 自体は残す)。
 
 ### 初回認証 (exec zsh 後の手動手順)
