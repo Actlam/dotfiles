@@ -1,6 +1,10 @@
 {
   "tui": "fullscreen",
   "theme": "auto",
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "model": "claude-fable-5[1m]",
   "statusLine": {
     "type": "command",
