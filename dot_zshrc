@@ -99,6 +99,19 @@ alias gcm='git commit'
 alias gmg='git merge'
 alias gpsh='git push'
 
+# A bare `herdr` reattaches to its persistent session. Before attaching, select
+# the workspace for this Git checkout (or create it) so the sidebar Git context
+# follows the project from which Herdr was launched. Subcommands and launches
+# from inside Herdr keep the upstream CLI behavior unchanged.
+if command -v herdr >/dev/null 2>&1; then
+  function herdr() {
+    if (( $# == 0 )) && [[ -z ${HERDR_ENV:-} ]] && command -v herdr-project >/dev/null 2>&1; then
+      command herdr-project "$PWD"
+    fi
+    command herdr "$@"
+  }
+fi
+
 # ghq + fzf
 if [[ -t 0 && -t 1 ]] && command -v ghq >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1; then
   function ghq-fzf() {

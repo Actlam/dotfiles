@@ -42,6 +42,19 @@ herdr integration install claude
 exec zsh
 ```
 
+### Herdrをリポジトリから起動する
+
+引数なしの `herdr` は、現在のGit checkoutに対応するworkspaceを選んでから永続セッションへ接続する。現在のworkspaceが同じcheckoutならそのまま維持し、別のworkspaceにいる場合は同じcheckoutのうち最新のものへ移動する。対応するworkspaceがなければ、リポジトリルートをcwdとして新しく作る。これにより、別のリポジトリへ移動して `herdr` を再実行したときも、サイドバーのブランチ表示が起動元と一致する。
+
+注意点:
+
+- Git管理外で起動した場合は自動選択せず、Herdr本来の再接続動作になる
+- worktreeはcheckoutのパスごとに別workspaceとして扱う
+- 同じcheckoutにタスク別workspaceが複数ある場合、自動選択だけでは作業内容を判別できないため最新のworkspaceを選ぶ。特定のタスクへ戻る場合はHerdrのサイドバーから選ぶ
+- `herdr workspace ...` や `herdr --session ...` など、引数付きの呼び出しには介入しない
+- Herdr内のシェルで `cd` しても既存workspaceの所属は変わらない。別リポジトリを開く場合はHerdrの外から起動し直すか、`herdr workspace create --cwd <path> --focus` を使う
+- Herdr serverがまだ起動していない初回は、Herdr自身に初期workspaceの作成を任せる
+
 `/etc/zshenv` に `ZDOTDIR=$HOME/.config/zsh` が残っている Mac では、apply の前に `sudoedit /etc/zshenv` で該当行だけ削除する(`/etc/zshenv` 自体は残す)。
 
 ### 初回認証 (exec zsh 後の手動手順)

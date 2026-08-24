@@ -1,0 +1,99 @@
+#!/usr/bin/env python3
+"""Focus or create the Herdr workspace for the current Git checkout."""
+
+import json
+import os
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+
+def run(*args):
+    return subprocess.run(
+        args,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=2,
+    )
+
+
+def git_root(path):
+    result = run("git", "-C", str(path), "rev-parse", "--show-toplevel")
+    if result.returncode != 0:
+        return None
+    value = result.stdout.strip()
+    return Path(value).resolve() if value else None
+
+
+def main():
+    cwd = Path(sys.argv[1] if len(sys.argv) > 1 else os.getcwd()).resolve()
+    project = git_root(cwd)
+    herdr = shutil.which("herdr")
+    if project is None or herdr is None:
+        return 0
+
+    status = run(herdr, "status", "server")
+    if status.returncode != 0 or "status: running" not in status.stdout:
+        # A first `herdr` launch creates the initial workspace itself. This helper
+        # only selects a project in an already-running persistent session.
+        return 0
+
+    snapshot_result = run(herdr, "api", "snapshot")
+    if snapshot_result.returncode != 0:
+        return 0
+    try:
+        response = json.loads(snapshot_result.stdout)
+        snapshot = response["result"]["snapshot"]
+    except (json.JSONDecodeError, KeyError, TypeError):
+        return 0
+
+    workspace_numbers = {
+        item.get("workspace_id"): item.get("number", 0)
+        for item in snapshot.get("workspaces", [])
+    }
+    candidates = set()
+    checked = {}
+    for pane in snapshot.get("panes", []):
+        pane_cwd = pane.get("cwd")
+        if not pane_cwd:
+            continue
+        if pane_cwd not in checked:
+            checked[pane_cwd] = git_root(pane_cwd)
+        workspace_id = pane.get("workspace_id")
+        if workspace_id and checked[pane_cwd] == project:
+            candidates.add(workspace_id)
+
+    focused_workspace_id = snapshot.get("focused_workspace_id")
+    if focused_workspace_id in candidates:
+        workspace_id = focused_workspace_id
+    else:
+        workspace_id = max(
+            candidates,
+            key=lambda item: workspace_numbers.get(item, 0),
+            default=None,
+        )
+
+    if workspace_id:
+        run(herdr, "workspace", "focus", workspace_id)
+    else:
+        run(
+            herdr,
+            "workspace",
+            "create",
+            "--cwd",
+            str(project),
+            "--label",
+            project.name,
+            "--focus",
+        )
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        raise SystemExit(main())
+    except (OSError, subprocess.SubprocessError):
+        # Workspace selection must never prevent Herdr itself from launching.
+        raise SystemExit(0)
