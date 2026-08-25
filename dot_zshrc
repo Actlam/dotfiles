@@ -1,3 +1,12 @@
+# >>> ghost-complete initialize >>>
+# !! Contents within this block are managed by 'ghost-complete install' !!
+if [[ -f '/Users/honya/.config/ghost-complete/shell/init.zsh' ]]; then
+  builtin source '/Users/honya/.config/ghost-complete/shell/init.zsh'
+else
+  echo "ghost-complete: init script missing: "'/Users/honya/.config/ghost-complete/shell/init.zsh' >&2
+  echo "ghost-complete: run 'ghost-complete install' to restore it" >&2
+fi
+# <<< ghost-complete initialize <<<
 # Shell behavior
 umask 022
 limit coredumpsize 0
@@ -136,3 +145,8 @@ fi
 if [ -f /opt/homebrew/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]; then
   source /opt/homebrew/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 fi
+
+# >>> ghost-complete shell integration >>>
+# !! Contents within this block are managed by 'ghost-complete install' !!
+source '/Users/honya/.config/ghost-complete/shell/ghost-complete.zsh'
+# <<< ghost-complete shell integration <<<
