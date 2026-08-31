@@ -1,3 +1,10 @@
+# >>> ghost-complete initialize >>>
+# ghost-complete が導入済みのPCでだけ有効化する(未導入PCでは無害なno-op)
+if [[ -f "$HOME/.config/ghost-complete/shell/init.zsh" ]]; then
+  builtin source "$HOME/.config/ghost-complete/shell/init.zsh"
+fi
+# <<< ghost-complete initialize <<<
+
 # Shell behavior
 umask 022
 limit coredumpsize 0
@@ -136,3 +143,9 @@ fi
 if [ -f /opt/homebrew/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]; then
   source /opt/homebrew/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 fi
+
+# >>> ghost-complete shell integration >>>
+if [[ -f "$HOME/.config/ghost-complete/shell/ghost-complete.zsh" ]]; then
+  builtin source "$HOME/.config/ghost-complete/shell/ghost-complete.zsh"
+fi
+# <<< ghost-complete shell integration <<<
