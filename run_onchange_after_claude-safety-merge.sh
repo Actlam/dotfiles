@@ -7,7 +7,7 @@
 # guard script hash: dot_claude/hooks/executable_git-push-guard.sh の変更でも
 # 再実行されるよう、chezmoi の run_onchange はこのファイル内容の変化を見る。
 # ガードを更新したら下の VERSION を上げること。
-# VERSION=1
+# VERSION=2
 
 set -euo pipefail
 
@@ -40,7 +40,9 @@ jq --arg cmd "$GUARD_CMD" '
     "Read(~/.aws/**)",
     "Read(**/.env*)",
     "Read(**/credentials*)"
-  ] | unique)
+  ] | unique) |
+  # 3. AIツールの帰属表記を無効化(コミット・PRにツール名を残さない)
+  .attribution = {"commit": "", "pr": ""}
 ' "$SETTINGS" > "$tmp"
 
 # 構文検証してから反映
