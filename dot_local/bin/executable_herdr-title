@@ -11,7 +11,7 @@ import time
 from pathlib import Path
 
 
-def set_codex_session_name(title):
+def set_codex_session_name(title, force=False):
     thread_id = os.environ.get("CODEX_THREAD_ID", "")
     if not thread_id:
         return
@@ -20,15 +20,18 @@ def set_codex_session_name(title):
         return
     try:
         with sqlite3.connect(database, timeout=1.0) as connection:
-            connection.execute(
-                "UPDATE threads SET name = ? WHERE id = ? AND (name IS NULL OR name = '')",
-                (title, thread_id),
-            )
+            if force:
+                connection.execute("UPDATE threads SET name = ? WHERE id = ?", (title, thread_id))
+            else:
+                connection.execute(
+                    "UPDATE threads SET name = ? WHERE id = ? AND (name IS NULL OR name = '')",
+                    (title, thread_id),
+                )
     except sqlite3.Error:
         pass
 
 
-def set_claude_session_name(title):
+def set_claude_session_name(title, force=False):
     session_id = os.environ.get("CLAUDE_CODE_SESSION_ID", "")
     if not session_id:
         return
@@ -39,7 +42,7 @@ def set_claude_session_name(title):
     transcript = transcripts[0]
     try:
         with transcript.open(encoding="utf-8", errors="replace") as source:
-            if any('"type":"custom-title"' in line for line in source):
+            if not force and any('"type":"custom-title"' in line for line in source):
                 return
         event = {"type": "custom-title", "customTitle": title, "sessionId": session_id}
         with transcript.open("a", encoding="utf-8") as destination:
@@ -48,9 +51,9 @@ def set_claude_session_name(title):
         pass
 
 
-def set_agent_session_name(title):
-    set_codex_session_name(title)
-    set_claude_session_name(title)
+def set_agent_session_name(title, force=False):
+    set_codex_session_name(title, force)
+    set_claude_session_name(title, force)
 
 
 def request(socket_path, method, params=None):
@@ -104,7 +107,7 @@ def main():
     if len(title) > 28:
         title = title[:27].rstrip() + "…"
 
-    set_agent_session_name(title)
+    set_agent_session_name(title, force)
 
     pane_id = os.environ.get("HERDR_PANE_ID", "")
     socket_path = os.environ.get("HERDR_SOCKET_PATH", "")
