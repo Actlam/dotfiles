@@ -12,6 +12,7 @@ bun = "latest"
 # Add more with: mise use -g npm:<package>
 "npm:@antfu/ni" = "latest"
 "npm:@google/gemini-cli" = "latest"
+"npm:@googleworkspace/cli" = "latest"
 "npm:@openai/codex" = "latest"
 "npm:difit" = "latest"
 "npm:pnpm" = "latest"
