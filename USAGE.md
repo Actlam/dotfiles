@@ -158,3 +158,13 @@ yazi の画像 / 動画 / PDF プレビューは **Kitty Graphics Protocol** 対
 ### `/etc/zshenv` の `ZDOTDIR` は除去済みであること
 
 旧設定の名残で `/etc/zshenv` に `ZDOTDIR=$HOME/.config/zsh` が残っていると、chezmoi 管理の `~/.zshrc` が読まれない(代わりに `~/.config/zsh/.zshenv` のブリッジが救うが、毎回それを通すのは無駄)。新規 Mac セットアップ時は `sudoedit /etc/zshenv` で該当行を消す。
+
+### 1Password CLI (op) が固まる (macOS 26 Tahoe)
+
+macOS 26 では Caskroom 配下のバイナリが起動時に `_dyld_start` で停止する事象がある(別パスへコピーすると起動する。詳細と撤去条件は `dot_local/bin/executable_op-fix` のコメント参照)。
+
+| 症状 | 対処 |
+|---|---|
+| `brew install/upgrade 1password-cli` が completion 生成で固まる | `pkill -x op` で続行。バイナリは使えるが shell 補完は欠落しうる |
+| `op --version` など起動自体が固まる | `op-fix` を実行(chezmoi が `~/.local/bin` に配布。upgrade で symlink に戻るたびに再実行) |
+| 認証付きコマンド(`op read` 等)だけ固まる | そのコマンドに限り `--cache=false` を1回試す。改善しなければ別原因として切り分ける |

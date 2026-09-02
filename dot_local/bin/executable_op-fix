@@ -1,0 +1,66 @@
+#!/bin/bash
+# 1Password CLI (op) が macOS 26 (Tahoe) で起動しない問題の修復スクリプト。
+#
+# 観測事実(2026-09-01, macOS 26.5.2 / op 2.39.0):
+#   - Caskroom 配下の op は _dyld_start で停止し main() に到達しない
+#     (lsof で dyld 以外のライブラリ未ロード、sample で全サンプル _dyld_start)
+#   - 同一バイナリ(SHA-256 一致・署名/公証 valid)を別パスへコピーすると即起動する
+#   - 類似事例: https://github.com/openai/codex/issues/23802 (codex CLI, 同症状)
+#   原因は macOS 26 の Gatekeeper/provenance 周りと整合するが断定はしない。
+#
+# 対処: brew の symlink ($(brew --prefix)/bin/op → Caskroom) を実体コピーへ置き換える。
+# brew install/upgrade のたびに symlink へ戻るので、その都度これを実行する。
+#
+# 撤去条件: brew upgrade を挟んで複数回、このスクリプトが
+# 「ワークアラウンド不要」と報告し続けたら、本スクリプトと
+# README/USAGE の関連記述を削除する(見直し目安: macOS/op の更新時)。
+
+set -euo pipefail
+
+PREFIX=$(brew --prefix)
+CASKROOM=$(brew --caskroom 2>/dev/null || echo "$PREFIX/Caskroom")
+DEST="$PREFIX/bin/op"
+
+latest=$(ls -1 "$CASKROOM/1password-cli" 2>/dev/null | sort -V | tail -1)
+SRC="$CASKROOM/1password-cli/$latest/op"
+
+if [ -z "$latest" ] || [ ! -x "$SRC" ]; then
+  echo "op-fix: Caskroom に op がありません。先に brew install 1password-cli を実行してください。" >&2
+  exit 1
+fi
+
+# macOS に timeout(1) がないため bg 実行 + watchdog で代替
+boots_within_5s() {
+  "$1" --version >/dev/null 2>&1 &
+  local pid=$!
+  ( sleep 5; kill "$pid" 2>/dev/null ) &
+  local watchdog=$!
+  local status=0
+  wait "$pid" 2>/dev/null || status=$?
+  kill "$watchdog" 2>/dev/null || true
+  wait "$watchdog" 2>/dev/null || true
+  return "$status"
+}
+
+if boots_within_5s "$SRC"; then
+  echo "op-fix: 元バイナリ ($SRC) は正常に起動します。ワークアラウンドは不要です。"
+  echo "op-fix: brew upgrade 後もこの状態が続くなら、このスクリプトと関連ドキュメントを撤去してください。"
+  exit 0
+fi
+
+echo "op-fix: 元バイナリが5秒以内に起動しません。実体コピーへ置き換えます。"
+TMP=$(mktemp "$PREFIX/bin/.op-fix.XXXXXX")
+trap 'rm -f "$TMP"' EXIT
+cp "$SRC" "$TMP"
+xattr -d com.apple.quarantine "$TMP" 2>/dev/null || true
+codesign --verify --strict "$TMP"
+chmod 755 "$TMP"
+mv -f "$TMP" "$DEST"
+trap - EXIT
+
+if boots_within_5s "$DEST"; then
+  echo "op-fix: 修復完了。$DEST → $("$DEST" --version)"
+else
+  echo "op-fix: 置き換え後も $DEST が起動しません。手動調査が必要です。" >&2
+  exit 1
+fi
