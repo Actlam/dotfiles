@@ -123,6 +123,26 @@ chezmoi cd                    # commit / push / PR
 
 別PCでは、マージ後に `chezmoi update` して各エージェントを新しく起動する。起動済みセッションへ確実に反映したい場合は再起動する。
 
+#### Raindrop MCP を Codex に接続する
+
+公式サーバーへの接続設定は [dot_codex/mcp/raindrop.toml](./dot_codex/mcp/raindrop.toml) が正本。`chezmoi apply` は設定断片を `~/.codex/mcp/raindrop.toml` に配布するだけで、Codexはこのディレクトリを自動では読み込まない。
+
+Node.js / npm が使える環境で、断片内の `[mcp_servers.raindrop]` テーブルを `~/.codex/config.toml` に追加する。同名テーブルがある場合は置き換え、他の設定は保持する。次のコマンドで登録内容を確認する。
+
+```sh
+codex mcp get raindrop
+```
+
+初回は次のコマンドを実行し、開いたブラウザでRaindropにログインしてアクセスを許可する。接続成功後は `Ctrl+C` で終了し、Codexのセッションを再開または新規起動する。
+
+```sh
+npx -y mcp-remote@0.8.4 https://api.raindrop.io/rest/v2/ai/mcp
+```
+
+[公式手順](https://help.raindrop.io/integrations/mcp)の `mcp-remote` を使用し、検証したバージョンを固定する。Codexの直接HTTP接続ではOAuthクライアント登録が拒否されたため、この構成では `codex mcp login raindrop` は使わない。初回ダウンロードを考慮して起動待ち時間は60秒にする。
+
+認証情報は `mcp-remote` がローカルの `~/.mcp-auth` に保存する。dotfilesへ取り込まない。公式MCPは閲覧・編集権限を要求するため、ブックマークの更新や削除は依頼内容を確認して実行する。
+
 ### 8. ターミナル出力で困ったとき
 
 | やりたいこと | コマンド |
