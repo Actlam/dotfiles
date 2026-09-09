@@ -1,0 +1,8 @@
+# Raindrop.io official MCP via the documented mcp-remote bridge.
+# Source: https://help.raindrop.io/integrations/mcp
+# Reference only: Codex does not automatically load this directory.
+# Setup and browser authorization: see USAGE.md, Raindrop MCP.
+[mcp_servers.raindrop]
+command = "npx"
+args = ["-y", "mcp-remote@0.8.4", "https://api.raindrop.io/rest/v2/ai/mcp"]
+startup_timeout_sec = 60
