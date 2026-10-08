@@ -75,3 +75,13 @@
 - よく使う形: `difit` / `difit HEAD` / `difit main HEAD` / `difit --pr <PR URL>`
 - 引数詳細は `difit --help`
 - スクリプト的な比較や grep には引き続き `git diff` を使う
+
+## ブラウザテスト: `agent-browser` を使う
+
+Web ページの操作・動作確認（ナビゲート・スナップショット・フォーム入力・クリック・スクリーンショット等）には `agent-browser` CLI を使う。Chrome DevTools MCP や組み込みの web 系ツールより優先する。
+
+- dotfiles でセットアップ済み（`brew "agent-browser"`）。Chrome は別途 `agent-browser install` で同梱版を取得
+- 基本ループ: `agent-browser open <url>` → `agent-browser snapshot -i`（`@eN` ref を取得）→ `agent-browser click @eN` / `fill @eN "text"` → ページが変わったら再 snapshot → `agent-browser screenshot <path>` → `agent-browser close`
+- `@eN` ref は snapshot のたびに振り直され、ページ変更で無効になる。操作後は必ず再 snapshot
+- エージェント向け出力は `--json`、待機は `agent-browser wait --load networkidle` など（`wait 2000` は最終手段）
+- コマンド全体は `agent-browser skills get core --full` で取得できる
