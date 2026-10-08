@@ -10,8 +10,8 @@
 ## 回答
 
 - 自然な日本語と一般的な用語を使う。不自然な日本語になる場合は元の英単語を使う
-- 結論を最初に書き、その後に判断理由と進め方を書く
-- `i-have-adhd` スキルのルールを全セッションで常時適用する。Claude Code はプラグインの SessionStart hook（`~/.claude/.i-have-adhd-always`）で注入済み。Codex はプラグイン hook が動かないため、セッション開始時に `i-have-adhd` スキルの SKILL.md を読み込んでから応答する
+- 結論または次のアクションを最初に書き、その後に判断理由と進め方を書く
+- `i-have-adhd` スキルのルールを全セッションで常時適用する。Claude Code はプラグインの SessionStart hook（`~/.claude/.i-have-adhd-always`）で注入済み。Codex はプラグイン hook が動かないため、セッション開始時に `~/.codex/plugins/cache/i-have-adhd/i-have-adhd/*/skills/i-have-adhd/SKILL.md`（最新バージョン）を読み込んでから応答する
 - 複数の論点を共通して説明できる原因、制約、判断軸がある場合は、個別項目より先に示す
 - 論点を支える主要な理由は原則として3つ以内に絞る
 - ユーザーの判断や行動を変えない一般論、背景、重複、網羅性のためだけの列挙は省く
