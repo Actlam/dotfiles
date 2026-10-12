@@ -21,6 +21,7 @@ brew "atuin"
 brew "bat"
 brew "eza"
 brew "glow"
+brew "d2" # テキストから図を描く CLI (explainer スキルの D2 図で使用)
 brew "git-delta"
 brew "jq"
 brew "yq"
