@@ -143,6 +143,25 @@ npx -y mcp-remote@0.8.4 https://api.raindrop.io/rest/v2/ai/mcp
 
 認証情報は `mcp-remote` がローカルの `~/.mcp-auth` に保存する。dotfilesへ取り込まない。公式MCPは閲覧・編集権限を要求するため、ブックマークの更新や削除は依頼内容を確認して実行する。
 
+#### Cloudflare API MCP を Codex に接続する
+
+接続設定の正本は [dot_codex/mcp/cloudflare-api.toml](./dot_codex/mcp/cloudflare-api.toml)。chezmoiは設定断片を配布するだけなので、各PCで次を実行してCodexへ登録する。
+
+```sh
+codex mcp add cloudflare-api --url https://mcp.cloudflare.com/mcp
+```
+
+登録時に始まるOAuthは全サービスの権限を要求することがある。ドメイン確認とDNS設定だけに使う場合は、その認証を中断して次を実行する。
+
+```sh
+codex mcp login cloudflare-api --scopes user:read,account:read,zone.read,dns.read,dns.write
+codex mcp get cloudflare-api
+```
+
+表示されたURLをブラウザで開き、対象アカウントと権限を確認して認証する。認証情報はCodexのローカル認証ストアに保存し、dotfilesへ取り込まない。認証後はCodexを新規起動またはセッションを再開してツールを読み込む。別PCでも登録・認証が必要。
+
+[公式サーバー](https://developers.cloudflare.com/agents/model-context-protocol/cloudflare/servers-for-cloudflare/)はDNSを含むCloudflare APIを扱える。Tunnelなど追加の設定で権限が必要になったら、その用途に合わせて再認証する。DNS変更は対象ドメインと既存レコードを確認してから行う。
+
 ### 8. ターミナル出力で困ったとき
 
 | やりたいこと | コマンド |

@@ -1,0 +1,6 @@
+# Official Cloudflare API MCP (Streamable HTTP).
+# Source: https://developers.cloudflare.com/agents/model-context-protocol/cloudflare/servers-for-cloudflare/
+# Reference only: Codex does not automatically load this directory.
+# Registration and OAuth: see USAGE.md, Cloudflare API MCP.
+[mcp_servers.cloudflare-api]
+url = "https://mcp.cloudflare.com/mcp"
