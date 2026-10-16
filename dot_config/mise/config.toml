@@ -14,6 +14,8 @@ bun = "latest"
 "npm:@google/gemini-cli" = "latest"
 "npm:@googleworkspace/cli" = "latest"
 "npm:@openai/codex" = "latest"
+# GrokのpostinstallはOS別パッケージから実行バイナリを展開する。
+"npm:@xai-official/grok" = { version = "latest", allow_builds = ["@xai-official/grok"] }
 "npm:difit" = "latest"
 "npm:pnpm" = "latest"
 
