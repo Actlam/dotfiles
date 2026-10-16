@@ -54,6 +54,7 @@ dotfiles に含めない方針(シークレット混入を避ける)のため、
 | Claude Code | `claude` を起動 | 初回起動でブラウザ認証 |
 | Codex | `codex` を起動 | 同上 |
 | Gemini CLI | `gemini` を起動 | 同上 |
+| Grok Build | `grok login` | Grokアカウントでブラウザ認証。認証後はプロジェクトのディレクトリで `grok` を起動 |
 | Atuin sync (任意) | `atuin login` | 履歴を別マシンと同期する場合のみ |
 | 1Password CLI 連携 | 1Password アプリ → 設定 → 開発者 → 「1Password CLI と連携」を有効化 | `op vault list` で疎通確認(Touch ID 承認)。op や brew が固まる場合は USAGE.md の落とし穴参照 |
 | SSH 鍵 (任意) | — | 通常運用は不要。ssh 強制リモートを使うときのみ別途設定 |
