@@ -16,6 +16,8 @@
 
 入れているもの: zsh, git, starship, Ghostty, WezTerm, GitHub CLI 通常設定, Codex / Claude Code / Gemini CLIで共有するAGENTS.md, Herdrと各CLIのresume検索で共有する意味ベースセッションタイトル, Homebrew パッケージ一覧 (`Brewfile`), Zed のアプリインストール, Claude Code の安全設定（git pushガードhookと permissions.deny。`run_onchange_after_claude-safety-merge.sh` が `~/.claude/settings.json` へ所有エントリだけ冪等マージする）。
 
+Claude Code と Codex の `pstack-models.md` は、セッション開始時の `pstack` 指示注入を止める。スキルは必要な作業で個別に使える。
+
 入れないもの: `~/.ssh`, `~/.config/gh/hosts.yml`, `.env` / `.npmrc` / token / credentials, Zed の設定本体, nvim / fish, macOS defaults, bootstrap script, `ZDOTDIR` 運用, `~/.claude/settings.json` の全面管理（マシン固有のUI設定・hooks・permissionsを上書きしないため。安全設定のみ上記スクリプトでマージ）。
 
 詳細は各ファイルを直接見る。
