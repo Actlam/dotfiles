@@ -124,3 +124,5 @@ python3 -m unittest discover -s tests -v
 ```
 
 chezmoi適用後も同じ内容を再実行できる。設定の機密値をこのリポジトリへコピーしない。
+
+pstackとi-have-adhdは通常時の自動適用を止めるため無効化する。pstackの専門ワークフローを使うときは、使うCLIのプラグイン管理で一時的に有効化できる。常時有効へ戻す場合は `settings-policy.json` の対象項目も変更する。
