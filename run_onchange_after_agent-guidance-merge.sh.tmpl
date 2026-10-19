@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+# policy: {{ include "dot_agents/settings-policy.json" | sha256sum }}
+# helper: {{ include "dot_local/bin/executable_agent-settings-sync" | sha256sum }}
+python3 "$HOME/.local/bin/agent-settings-sync"

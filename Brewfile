@@ -6,6 +6,7 @@ brew "ghq"
 brew "d-kuro/tap/gwq"
 brew "gh"
 brew "chezmoi"
+brew "python" # agent-settings-sync の TOML 解析に Python 3.11 以上を使用
 brew "mise"
 brew "herdr"
 brew "awscli"
