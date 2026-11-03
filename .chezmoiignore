@@ -4,3 +4,7 @@ Brewfile
 .gitignore
 .chezmoiignore
 LICENSE
+tests
+tests/**
+**/__pycache__
+**/__pycache__/**

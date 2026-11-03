@@ -1,0 +1,12 @@
+{
+  "claude_auto_environment": [
+    "$defaults"
+  ],
+  "preserve_environment_slots": [
+    "Trusted internal domains"
+  ],
+  "disabled_plugins": [
+    "i-have-adhd@i-have-adhd",
+    "pstack@pstack-claude"
+  ]
+}

@@ -20,3 +20,4 @@
 
 # chezmoi local state
 .chezmoistate/
+__pycache__/

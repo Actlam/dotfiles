@@ -29,7 +29,7 @@ xcode-select --install
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
-brew install ghq chezmoi
+brew install ghq chezmoi jq python
 ghq get https://github.com/Actlam/dotfiles.git
 chezmoi init --source ~/ghq/github.com/Actlam/dotfiles  # git name/email と ghq root を聞かれる(既定 ~/ghq)
 chezmoi diff && chezmoi apply
@@ -108,3 +108,21 @@ ls -la /opt/homebrew/etc/bash_completion.d/wezterm
 ```
 
 該当があれば `rm`(root 所有なら `sudo rm`)してから `brew install --cask <name>` を再実行。
+
+
+## エージェント設定の適用
+
+共通の読みやすさの配慮は `dot_agents/AGENTS.md` に集約する。タイトルと差分表示の操作手順は `dot_agents/session-tools.md` を必要な場面で参照する。
+
+`dot_agents/settings-policy.json` は、Claudeの環境記述と自動注入を止めるプラグインだけを管理する。環境記述は `$defaults` を継承し、現在のリポジトリや公開範囲を固定しない。`agent-settings-sync` がClaude/Codexの設定へ対象項目だけをマージし、権限・フック・MCP接続などは保持する。
+
+設定のTOML解析にPython 3.11以上を使うため、初回のchezmoi適用前にHomebrew版Pythonを導入する。
+
+```sh
+python3 dot_local/bin/executable_agent-settings-sync --policy dot_agents/settings-policy.json --dry-run
+python3 -m unittest discover -s tests -v
+```
+
+chezmoi適用後も同じ内容を再実行できる。設定の機密値をこのリポジトリへコピーしない。
+
+pstackとi-have-adhdは通常時の自動適用を止めるため無効化する。pstackの専門ワークフローを使うときは、使うCLIのプラグイン管理で一時的に有効化できる。常時有効へ戻す場合は `settings-policy.json` の対象項目も変更する。
